@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio - Keynes AI</title>
+  <link rel="stylesheet" href="{{ url_for('style') }}" />
+  <style>
+    body {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    background: url("{{ url_for('static', filename='portfoliogalbg.jpg') }}") no-repeat center center fixed;
+    background-size: cover;
+  }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">Keynes AI</a>
+    <nav class="nav-links">
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('portfolio') }}">Portfolio</a>
+        <a href="{{ url_for('predictions') }}">Predictions</a>
+        <a href="{{ url_for('trending_stocks') }}">Trending Stocks</a>
+      </nav>
+      <div class="auth-buttons">
+        <button class="btn lime" onclick="showSignup()">Sign Up!</button>
+        <button class="btn lime" onclick="showLogin()">Log In!</button>
+      </div>      
+  </header>
+
+  <main class="portfolio-main">
+    <h1>Portfolio Overview</h1>
+
+    <div class="portfolio-overview">
+      <div class="overview-box">Total Portfolio Value: ${{ total_value }}</div>
+      <div class="overview-box">Today’s Gain/Loss: ${{ gain_loss }}</div>
+      <div class="overview-box">Top Performing Stock: {{ top_stock }}</div>      
+    </div>
+
+    <h2>Stock Holdings</h2>
+
+    <table class="stock-table">
+      <thead>
+        <tr>
+          <th>Stock Name</th>
+          <th>Shares Owned</th>
+          <th>Buy Price</th>
+          <th>Current Price</th>
+          <th>Change %</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock in portfolio %}
+        <tr>
+          <td>{{ stock.name }}</td>
+          <td>{{ stock.shares }}</td>
+          <td>${{ stock.buy_price }}</td>
+          <td>${{ stock.current_price }}</td>
+          <td>{{ stock.change_percent }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>      
+    </table>
+
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <h2>Login</h2>
+        <label>Email:</label>
+        <input type="email" placeholder="Enter Email">
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password">
+        <p>Don’t have an account? Click <a href="#" onclick="switchToSignup()">here</a> to sign up now!</p>
+        <button onclick="alert('Logged in!')">Login</button>
+      </div>
+    </div>
+    
+    <div id="signupModal" class="modal">
+      <div class="modal-content">
+        <h2>Signup</h2>
+        <label>Email:</label>
+        <input type="email" placeholder="Enter Email">
+        <label>Confirm Email:</label>
+        <input type="email" placeholder="Re-enter Email">
+        <label>Create Password:</label>
+        <input type="password" placeholder="Enter Password">
+        <label>Confirm Password:</label>
+        <input type="password" placeholder="Re-enter Password">
+        <button onclick="alert('Account created!')">Create Account</button>
+        <p>Already have an account? Click <a href="#" onclick="switchToLogin()">here</a> to sign in!</p>
+      </div>
+    </div>
+    
+
+  </main>
+
+  <script>
+    const links = document.querySelectorAll("a[href$='.html']");
+    links.forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const href = this.getAttribute("href");
+        document.body.style.opacity = 0;
+        setTimeout(() => {
+          window.location.href = href;
+        }, 300);
+      });
+    });
+
+    window.onload = () => {
+      document.body.style.opacity = 1;
+    };
+
+    const loginModal = document.getElementById("loginModal");
+    const signupModal = document.getElementById("signupModal");
+
+    function showLogin() {
+    loginModal.style.display = "flex";
+    signupModal.style.display = "none";
+    }
+
+    function showSignup() {
+    signupModal.style.display = "flex";
+    loginModal.style.display = "none";
+    }
+
+    function switchToSignup() {
+    showSignup();
+    }
+
+    function switchToLogin() {
+    showLogin();
+    }
+
+    window.onclick = function(event) {
+    if (event.target === loginModal) {
+      loginModal.style.display = "none";
+    }
+    if (event.target === signupModal) {
+      signupModal.style.display = "none";
+    }
+  };
+  </script>
+</body>
+</html>

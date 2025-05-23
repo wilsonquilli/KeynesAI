@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preload" href="{{ url_for('static', filename='trendingstocksbg.jpeg') }}" as="image">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trending Stocks | Keynes AI</title>
+  <link rel="stylesheet" href="{{ url_for('style') }}" />
+  <style>
+    body {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 20;
+    background: url("{{ url_for('static', filename='trendingstocksbg.jpeg') }}") no-repeat center center fixed;
+    background-size: cover;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); 
+      z-index: -1;
+    }
+
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">Keynes AI</a>
+    <nav class="nav-links">
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('portfolio') }}">Portfolio</a>
+      <a href="{{ url_for('predictions') }}">Predictions</a>
+      <a href="{{ url_for('trending_stocks') }}">Trending Stocks</a>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn lime" onclick="showSignup()">Sign Up!</button>
+      <button class="btn lime" onclick="showLogin()">Log In!</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Trending Stocks</h1>
+    <table id="stocks-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Change</th>
+          <th>Change (%)</th>
+          <th>Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <h2>Login</h2>
+        <label>Email:</label>
+        <input type="email" placeholder="Enter Email">
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password">
+        <p>Don’t have an account? Click <a href="#" onclick="switchToSignup()">here</a> to sign up now!</p>
+        <button onclick="alert('Logged in!')">Login</button>
+      </div>
+    </div>
+
+    <div id="signupModal" class="modal">
+      <div class="modal-content">
+        <h2>Signup</h2>
+        <label>Email:</label>
+        <input type="email" placeholder="Enter Email">
+        <label>Confirm Email:</label>
+        <input type="email" placeholder="Re-enter Email">
+        <label>Create Password:</label>
+        <input type="password" placeholder="Enter Password">
+        <label>Confirm Password:</label>
+        <input type="password" placeholder="Re-enter Password">
+        <button onclick="alert('Account created!')">Create Account</button>
+        <p>Already have an account? Click <a href="#" onclick="switchToLogin()">here</a> to sign in!</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const apiKey = "mtDz2ezqHk7Bpv0hcTsWDCSIqlYofuMu";
+    const apiUrl = `https://financialmodelingprep.com/api/v3/stock_market/actives?apikey=${apiKey}`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector('#stocks-table tbody');
+        tableBody.innerHTML = ''; 
+
+        data.forEach(stock => {
+          const row = document.createElement('tr');
+          const changeClass = parseFloat(stock.change) >= 0 ? 'positive' : 'negative';
+
+          row.innerHTML = `
+            <td>${stock.symbol}</td>
+            <td>${stock.name}</td>
+            <td>$${parseFloat(stock.price).toFixed(2)}</td>
+            <td class="${changeClass}">${parseFloat(stock.change).toFixed(2)}</td>
+            <td class="${changeClass}">${parseFloat(stock.changesPercentage).toFixed(2)}%</td>
+            <td>${parseInt(stock.volume).toLocaleString()}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching stock data:', error);
+      });
+
+    const links = document.querySelectorAll("a[href$='.html']");
+    links.forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const href = this.getAttribute("href");
+        document.body.style.opacity = 0;
+        setTimeout(() => {
+          window.location.href = href;
+        }, 300);
+      });
+    });
+
+    window.onload = () => {
+      document.body.style.opacity = 1;
+    };
+
+    const loginModal = document.getElementById("loginModal");
+    const signupModal = document.getElementById("signupModal");
+
+    function showLogin() {
+      loginModal.style.display = "flex";
+      signupModal.style.display = "none";
+    }
+
+    function showSignup() {
+      signupModal.style.display = "flex";
+      loginModal.style.display = "none";
+    }
+
+    function switchToSignup() {
+      showSignup();
+    }
+
+    function switchToLogin() {
+      showLogin();
+    }
+
+    window.onclick = function(event) {
+      if (event.target === loginModal) {
+        loginModal.style.display = "none";
+      }
+      if (event.target === signupModal) {
+        signupModal.style.display = "none";
+      }
+    };
+  </script>
+</body>
+</html>

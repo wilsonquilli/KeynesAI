@@ -76,16 +76,6 @@ The application will auto-create necessary tables on the first launch.
 python app.py
 - Visit your app in the browser: [http://localhost:5000](http://localhost:5000)
 
-## Project Structure:
-KeynesAI/
-├── app.py #Core backend application
-├── static/ #Backend logic and assets
-│ ├── stock.py #Stock analysis functionality
-│ ├── stock_tree.py #Hierarchical stock categorization
-│ └── boomCrash.py #Market fluctuation data models
-├── templates/ #Frontend HTML templates
-└── requirements.txt #Required Python packages
-
 ## Contributors:
 **Mostafa Amer** – Developed the ML model, sourced YFinance data, implemented stock sector categorization with tree structures, built the user authentication system with MySQL, and designed several UI components.  
 **Nicholas Shvelidze** – Developed `boomCrash.py` and `chart.py` modules to enhance the training set, boosting model accuracy to 65%.  

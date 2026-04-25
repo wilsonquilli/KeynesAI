@@ -1,0 +1,9 @@
+Flask
+joblib
+numpy
+pandas
+python-dotenv
+requests
+scikit-learn
+supabase
+yfinance

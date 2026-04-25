@@ -1,90 +1,136 @@
-# KeynesAI – Intelligent Stock Market Prediction Platform
+# KeynesAI
 
-KeynesAI is a stock forecasting platform that leverages machine learning to achieve prediction accuracy around 65%. This advanced, web-based system supports users in analyzing the stock market, generating price forecasts, and managing their investment portfolios. The platform is built using Flask and integrates machine learning techniques for robust performance.
+KeynesAI is a stock market web app with a Flask backend and a React frontend. It combines live market snapshots, a stock prediction workflow, portfolio tracking, sector browsing, and Supabase-backed authentication with 65% prediction accuracy.
 
-## Key Features:
+## What’s In The App
 
-**1. Stock Insights:**
-- Live stock data monitoring  
-- Detection of patterns in stock behavior  
-- Integration of technical indicators  
-- Predictive models powered by machine learning  
-- Stock data collected using the YFinance API  
-- Trained a model using the RandomForestClassifier from scikit-learn
+- `Trending Stocks`: Loads gainers, losers, and market movers from a cached multi-provider market data pipeline.
+- `Predictions`: Shows momentum-based stock signals with confidence, horizon, rationale, and projected target prices.
+- `Portfolio`: Lets authenticated users manage owned stocks, watchlists, and wishlists.
+- `Authentication`: Login, registration, session handling, and portfolio persistence using Supabase.
 
-**2. User Authentication:**
-- Secure sign-up and login features  
-- Encrypted password storage with hashing  
-- Session tracking for secure access  
-- Built using a MySQL database via XAMPP
+## Current Stack
 
-**3. Portfolio Tracker:**
-- Monitor and manage multiple stock holdings  
-- Dynamic portfolio valuation  
-- Performance analysis tools  
-- Track gains and losses in real-time
+- Backend: Python, Flask
+- Frontend: React
+- Data processing: pandas, numpy
+- Machine learning: scikit-learn
+- Database/Auth: Supabase
+- Market data: Nasdaq, Finnhub, Yahoo Finance fallbacks
 
-**4. Sector Breakdown:**
-- Organized stock categories using a tree data structure  
-- Navigate stocks by sector  
-- Filter stocks based on their classification
+## Project Structure
 
-**5. Prediction Module:**
-- Stock data retrieved from YFinance  
-- Forecasts generated using machine learning algorithms  
-- Predictions across various time ranges  
-- Pattern recognition based on technical data  
-- Utilizes a Random Forest classifier model
+```text
+KeynesAI/
+├── backend/
+│   ├── app.py
+│   ├── stock.py
+│   ├── boomCrash.py
+│   ├── chart.py
+│   ├── stock_tree.py
+│   ├── requirements.txt
+│   ├── supabase_schema.sql
+│   └── .env
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
+```
 
-## Tech Stack:
-- Backend: Python (Flask)  
-- Database: MySQL  
-- Machine Learning: scikit-learn  
-- Data Processing: pandas  
-- Frontend: HTML/CSS, JavaScript
+## Backend Features
 
-## Requirements:
-- Python 3.x  
-- MySQL Server  
-- XAMPP (for local testing and development)
+- Flask API routes for:
+  - auth status
+  - login / register / logout
+  - portfolio CRUD
+  - trending market data
+  - market predictions
+- Cached market snapshot loading to keep the UI faster after the first request
+- Parallel market-provider fetches for trending/predictions pages
+- Prediction pipeline in `backend/stock.py` with:
+  - technical features
+  - horizon-based features
+  - RandomForest-based signal generation
+  - future prediction generation for the predictions page
 
-## Setup Instructions:
+## Frontend Features
 
-**1. Clone the Repository**
-git clone https://github.com/yourusername/KeynesAI.git
-cd KeynesAI
+- React SPA served separately through Vite during development
+- API proxy from Vite to Flask for:
+  - `/api`
+  - `/login`
+  - `/register`
+  - `/logout`
+- Pages:
+  - Home
+  - Predictions
+  - Trending
+  - Portfolio
 
-**2. Install Dependencies**
+## Installation
+
+### Backend
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+```
 
-**3. Database Setup**
-- Start MySQL via XAMPP  
-- Create the database `KeynesAI` and run:
+### Frontend
 
-CREATE TABLE IF NOT EXISTS users (
-id INT AUTO_INCREMENT PRIMARY KEY,
-email VARCHAR(255) UNIQUE NOT NULL,
-password VARCHAR(255) NOT NULL
-);
+```bash
+cd frontend
+npm install
+```
 
-The application will auto-create necessary tables on the first launch.
+## Running The App
 
-**4. Update Database Credentials**
-- In `app.py`, adjust `db_config` if your MySQL login details differ.
+Start the backend:
 
-## Running the App:
-python app.py
-- Visit your app in the browser: [http://localhost:5000](http://localhost:5000)
+```bash
+cd backend
+python3 app.py
+```
 
-## Contributors:
-**Mostafa Amer** – Developed the ML model, sourced YFinance data, implemented stock sector categorization with tree structures, built the user authentication system with MySQL, and designed several UI components.  
-**Nicholas Shvelidze** – Developed `boomCrash.py` and `chart.py` modules to enhance the training set, boosting model accuracy to 65%.  
-**Wilson Quilli** – Handled the frontend development; also assisted with backend integration of the ML model through Python (Flask).
+Start the frontend in another terminal:
 
-## License:
-This project is released under the MIT License – see the LICENSE file for details.
+```bash
+cd frontend
+npm run dev
+```
 
-## Contact:
-For questions or support, please reach out via email: **wilo240105@gmail.com**
+Then open the Vite app in the browser, usually:
 
-**README written by: Wilson Quilli**
+```text
+http://127.0.0.1:5173
+```
+
+The frontend proxies API traffic to the Flask backend at:
+
+```text
+http://127.0.0.1:5000
+```
+
+## Production Build
+
+Frontend production build:
+
+```bash
+cd frontend
+npm run build
+```
+
+## Contributors
+
+- Mostafa Amer
+- Nicholas Shvelidze
+- Wilson Quilli
+
+## Contact
+
+For questions or support:
+
+`wilo240105@gmail.com`

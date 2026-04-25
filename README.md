@@ -129,6 +129,10 @@ npm run build
 - Nicholas Shvelidze
 - Wilson Quilli
 
+## Deployment
+- Render - Backend
+- Vercel - Frontend
+
 ## Contact
 
 For questions or support:

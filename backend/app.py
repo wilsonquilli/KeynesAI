@@ -5,6 +5,7 @@ import re
 import time
 import pandas as pd
 import requests
+from flask_cors import CORS
 from sklearn.ensemble import RandomForestClassifier
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
@@ -45,7 +46,45 @@ except ModuleNotFoundError:
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app.secret_key = secrets.token_hex(32) 
+
+
+def parse_allowed_origins():
+    configured = os.environ.get("CORS_ORIGINS") or os.environ.get("FRONTEND_URL") or os.environ.get("APP_ORIGIN")
+    origins = []
+    if configured:
+        origins.extend([origin.strip() for origin in configured.split(",") if origin.strip()])
+
+    vercel_url = os.environ.get("VERCEL_URL")
+    if vercel_url:
+        vercel_origin = vercel_url if vercel_url.startswith("http") else f"https://{vercel_url}"
+        origins.append(vercel_origin.rstrip("/"))
+
+    origins.extend([
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ])
+    return list(dict.fromkeys(origins))
+
+
+app.secret_key = (
+    os.environ.get("FLASK_SECRET_KEY")
+    or os.environ.get("SECRET_KEY")
+    or secrets.token_hex(32)
+)
+allowed_origins = parse_allowed_origins()
+is_production = os.environ.get("FLASK_ENV") == "production" or os.environ.get("RENDER")
+
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=bool(is_production),
+    SESSION_COOKIE_SAMESITE="None" if is_production else "Lax",
+)
+
+CORS(
+    app,
+    supports_credentials=True,
+    resources={r"/api/*": {"origins": allowed_origins}, r"/login": {"origins": allowed_origins}, r"/register": {"origins": allowed_origins}, r"/logout": {"origins": allowed_origins}},
+)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_SECRET_KEY") or os.environ.get("SUPABASE_KEY")

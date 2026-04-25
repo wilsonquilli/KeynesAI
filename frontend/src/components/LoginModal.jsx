@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { readResponsePayload } from "../lib/api.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiUrl, readResponsePayload } from "../lib/api.js";
 
 const initialFormState = {
   email: "",
@@ -56,7 +54,7 @@ function LoginModal({ isOpen, mode, onClose, onModeChange, onAuthSuccess }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/${isSignup ? "register" : "login"}`, {
+      const response = await fetch(apiUrl(isSignup ? "/register" : "/login"), {
         method: "POST",
         credentials: "include",
         headers: {

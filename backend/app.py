@@ -52,7 +52,7 @@ def parse_allowed_origins():
     configured = os.environ.get("CORS_ORIGINS") or os.environ.get("FRONTEND_URL") or os.environ.get("APP_ORIGIN")
     origins = []
     if configured:
-        origins.extend([origin.strip() for origin in configured.split(",") if origin.strip()])
+        origins.extend([origin.strip().rstrip("/") for origin in configured.split(",") if origin.strip()])
 
     vercel_url = os.environ.get("VERCEL_URL")
     if vercel_url:
@@ -73,6 +73,8 @@ app.secret_key = (
 )
 allowed_origins = parse_allowed_origins()
 is_production = os.environ.get("FLASK_ENV") == "production" or os.environ.get("RENDER")
+
+print(f"Allowed CORS origins: {allowed_origins}")
 
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,

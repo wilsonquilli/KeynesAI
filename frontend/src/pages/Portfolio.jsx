@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { readResponsePayload } from "../lib/api.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiUrl, readResponsePayload } from "../lib/api.js";
 
 const TABS = [
   { id: "owned",    label: "Owned",        icon: "💼", desc: "Stocks you currently hold" },
@@ -312,7 +310,7 @@ function Portfolio({ user, onOpenLogin }) {
       setError("");
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/portfolio`, {
+        const response = await fetch(apiUrl("/api/portfolio"), {
           credentials: "include",
           headers: {
             Accept: "application/json",
@@ -344,7 +342,7 @@ function Portfolio({ user, onOpenLogin }) {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/portfolio/items`, {
+      const response = await fetch(apiUrl("/api/portfolio/items"), {
         method: "POST",
         credentials: "include",
         headers: {
@@ -378,7 +376,7 @@ function Portfolio({ user, onOpenLogin }) {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/portfolio/items/${itemId}`, {
+      const response = await fetch(apiUrl(`/api/portfolio/items/${itemId}`), {
         method: "DELETE",
         credentials: "include",
         headers: {

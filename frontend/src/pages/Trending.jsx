@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { readResponsePayload } from "../lib/api.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiUrl, readResponsePayload } from "../lib/api.js";
 
 function HeatBar({ chg }) {
   const val = Math.abs(parseFloat(chg));
@@ -121,7 +119,7 @@ function Trending() {
       setError("");
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/market/trending`, {
+        const response = await fetch(apiUrl("/api/market/trending"), {
           credentials: "include",
           headers: { Accept: "application/json" },
         });

@@ -133,6 +133,31 @@ npm run build
 - Render - Backend
 - Vercel - Frontend
 
+### Required production env vars
+
+Frontend on Vercel:
+
+```text
+VITE_API_BASE_URL=https://your-render-service.onrender.com
+```
+
+Backend on Render:
+
+```text
+CORS_ORIGINS=https://your-vercel-app.vercel.app
+FLASK_SECRET_KEY=your-stable-secret
+SUPABASE_URL=...
+SUPABASE_SECRET_KEY=...
+FINNHUB_KEY=...
+```
+
+Notes:
+
+- `VITE_API_BASE_URL` must be set in Vercel exactly with the `VITE_` prefix or the frontend build will not see it.
+- `CORS_ORIGINS` must match the exact Vercel origin, including `https://`, with no trailing slash.
+- After changing env vars in Vercel, redeploy the frontend so the new value is baked into the build.
+- Cross-site login depends on the backend sending cookies with `SameSite=None` and `Secure`, which this app already does in production.
+
 ## Contact
 
 For questions or support:

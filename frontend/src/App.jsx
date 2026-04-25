@@ -6,9 +6,7 @@ import LoginModal from "./components/LoginModal.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
 import Predictions from "./pages/Predictions.jsx";
 import Trending from "./pages/Trending.jsx";
-import { readResponsePayload } from "./lib/api.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiUrl, readResponsePayload } from "./lib/api.js";
 
 const TICKERS = [
   { sym: "AAPL", name: "Apple Inc.", price: "213.49", chg: "+1.24%", up: true },
@@ -161,7 +159,7 @@ function App() {
   useEffect(() => {
     const loadAuthStatus = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/status`, {
+        const response = await fetch(apiUrl("/api/auth/status"), {
           credentials: "include",
           headers: { Accept: "application/json" },
         });
@@ -197,7 +195,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/logout`, {
+      const response = await fetch(apiUrl("/logout"), {
         method: "POST",
         credentials: "include",
         headers: { Accept: "application/json" },

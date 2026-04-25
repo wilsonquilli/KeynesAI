@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { readResponsePayload } from "../lib/api.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiUrl, readResponsePayload } from "../lib/api.js";
 const HORIZONS = ["All", "7d", "14d", "30d"];
 const DIRECTIONS = ["All", "up", "down"];
 
@@ -183,7 +181,7 @@ function Predictions() {
       setError("");
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/market/predictions`, {
+        const response = await fetch(apiUrl("/api/market/predictions"), {
           credentials: "include",
           headers: { Accept: "application/json" },
         });
